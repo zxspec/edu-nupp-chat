@@ -67,7 +67,7 @@ export default function Form({
             <hr className="opacity-0 peer-focus:opacity-100 h-[1px] w-full border-neutral-800 transition"></hr>
             <div className="mt-4 flex flex-row justify-end">
               <Button
-                label="Tweet"
+                label="Post"
                 disabled={isLoading || !body}
                 onClick={onSubmit}
               />

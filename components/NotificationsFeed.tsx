@@ -2,7 +2,7 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useNotifications } from "@/hooks/useNotifications";
 import { fetcher } from "@/libs/fetcher";
 import { useEffect } from "react";
-import { BsTwitter } from "react-icons/bs";
+import { AiFillMessage } from "react-icons/ai";
 
 export const NotificationsFeed = () => {
   const { data: currentUser, mutate: mutateCurrentUser } = useCurrentUser();
@@ -30,7 +30,7 @@ export const NotificationsFeed = () => {
             key={notification.id}
             className="flex flex-row items-center p-6 gap-4 border-b-[1px] border-neutral-800"
           >
-            <BsTwitter color="white" size={32} />
+            <AiFillMessage color="white" size={32} />
             <p className="text-white">{notification.body}</p>
           </div>
         );

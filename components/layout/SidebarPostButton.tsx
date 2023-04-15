@@ -3,7 +3,7 @@ import { useCallback } from "react";
 import { FaFeather } from "react-icons/fa";
 import { useLoginModal } from "../../hooks/useLoginModal";
 
-export const SidebarTweetButton = () => {
+export const SidebarPostButton = () => {
   // const router = useRouter();
   const loginModal = useLoginModal();
   const onClick = useCallback(() => {

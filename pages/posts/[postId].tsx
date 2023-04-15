@@ -22,13 +22,9 @@ export default function PostView() {
 
   return (
     <>
-      <Header label="Tweet" showBackArrow />
+      <Header label="Post" showBackArrow />
       <PostItem postData={fetchedPost} />
-      <Form
-        postId={postId as string}
-        isComment
-        placeholder="Tweet your reply"
-      />
+      <Form postId={postId as string} isComment placeholder="Post your reply" />
       <CommentFeed comments={fetchedPost.comments} />
     </>
   );
