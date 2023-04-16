@@ -1,9 +1,11 @@
-import { generateKeyPairSync } from 'node:crypto'
+import { generateKeyPairSync, randomUUID, randomBytes, publicEncrypt } from 'node:crypto'
 import { join } from 'node:path'
 import { writeFile, readFile } from 'node:fs/promises'
 import { UserSecrets } from '@/types'
 
-const DATAFOLDER = 'data'
+import { DATAFOLDER } from '@/libs/constants'
+
+const getUserFilePath = (userId: string) => join(DATAFOLDER, `${userId}.json`)
 
 export const generateUserKeys = (passphrase: string) => {
     return generateKeyPairSync('rsa', {
@@ -22,8 +24,8 @@ export const generateUserKeys = (passphrase: string) => {
 }
 
 export const createUserSecrets = (userId: string, publicKey: string, privateKey: string) => {
-    const userJsonPath = join(process.cwd(), DATAFOLDER, `${userId}.json`)
-    const userData = {
+    const userJsonPath = getUserFilePath(userId)
+    const userData: UserSecrets = {
         id: userId,
         files: [],
         publicKey,
@@ -33,7 +35,38 @@ export const createUserSecrets = (userId: string, publicKey: string, privateKey:
 }
 
 export const getUserSecrets = async (userId: string): Promise<UserSecrets> => {
-    const userJsonPath = join(process.cwd(), DATAFOLDER, `${userId}.json`)
+    const userJsonPath = getUserFilePath(userId)
     const rawUserData = await readFile(userJsonPath, 'utf-8')
     return JSON.parse(rawUserData) as UserSecrets
+}
+
+export const updateUserSecrets = async (secrets: UserSecrets) => {
+    const userJsonPath = getUserFilePath(secrets.id)
+    return writeFile(userJsonPath, JSON.stringify(secrets))
+}
+
+
+
+export const createFileMeta = async (fileName: string, ownerId: string, publicKey: string) => {
+    const fileId = randomUUID()
+    const fileJsonPath = join(DATAFOLDER, `${fileId}.json`)
+    const fileSymEncryptionKey = randomBytes(32);
+    const encryptedKey = publicEncrypt(publicKey, fileSymEncryptionKey)
+
+    const fileMeta = {
+        id: fileId,
+        name: fileName,
+        owner: ownerId,
+        users: {
+            [ownerId]: encryptedKey,
+            // user1Id: encryptedKey,
+            // user2Id: encryptedKey,
+            // ...
+        },
+        groups: {}
+    }
+
+    await writeFile(fileJsonPath, JSON.stringify(fileMeta))
+
+    return fileMeta
 }
