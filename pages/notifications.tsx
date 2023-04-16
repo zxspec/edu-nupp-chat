@@ -22,9 +22,7 @@ export async function getServerSideProps(context: NextPageContext) {
   };
 }
 
-type Props = {};
-
-export default function Notifications({}: Props) {
+export default function Notifications() {
   return (
     <>
       <Header label="Notifications" showBackArrow />
