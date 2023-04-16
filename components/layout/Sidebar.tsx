@@ -1,6 +1,7 @@
 import { BiLogOut } from "react-icons/bi";
 import { BsHouseFill, BsBellFill } from "react-icons/bs";
 import { FaUser } from "react-icons/fa";
+import { RiFileShield2Fill } from "react-icons/ri";
 import { SidebarLogo } from "./SidebarLogo";
 import { SidebarItem } from "./SidebarItem";
 import { SidebarPostButton } from "./SidebarPostButton";
@@ -22,6 +23,12 @@ export const Sidebar = () => {
       icon: FaUser,
       auth: true,
       alert: currentUser?.hasNotification ?? undefined,
+    },
+    {
+      label: "Files",
+      href: "/files",
+      icon: RiFileShield2Fill,
+      auth: true,
     },
     {
       label: "Profile",
