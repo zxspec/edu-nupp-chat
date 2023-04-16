@@ -41,21 +41,25 @@ function uploadFile(req: NextApiRequest, res: NextApiResponse, secrets: UserSecr
     const bb = busboy({ headers: req.headers });
 
     bb.on("file", async (_, file, { filename }) => {
-        const { id: fileId, owner, users } = await createFileMeta(filename, secrets.id, secrets.publicKey)
-        const encryptedKey = users[owner]
-        const fileEncryptionKey = crypto.privateDecrypt({
-            key: secrets.privateKey,
-            passphrase,
-        }, encryptedKey);
+        try {
+            const { id: fileId, owner, users } = await createFileMeta(filename, secrets.id, secrets.publicKey)
+            const encryptedKey = Buffer.from(users[owner], 'hex')
+            const fileEncryptionKey = crypto.privateDecrypt({
+                key: secrets.privateKey,
+                passphrase,
+            }, encryptedKey);
 
-        const filePath = join(DATAFOLDER, fileId);
-        const cipher = crypto.createCipheriv('aes-256-cbc', fileEncryptionKey, INITIALIZATION_VECTOR);
-        const stream = fs.createWriteStream(filePath);
-        file.pipe(cipher).pipe(stream);
+            const filePath = join(DATAFOLDER, fileId);
+            const cipher = crypto.createCipheriv('aes-256-cbc', fileEncryptionKey, INITIALIZATION_VECTOR);
+            const stream = fs.createWriteStream(filePath);
+            file.pipe(cipher).pipe(stream);
 
-        if (!secrets.files.find(f => f === filePath)) {
-            secrets.files.push(filePath)
-            updateUserSecrets(secrets)
+            if (!secrets.files.find(f => f === filePath)) {
+                secrets.files.push(filePath)
+                updateUserSecrets(secrets)
+            }
+        } catch (e) {
+            bb.emit('error', e)
         }
     });
 

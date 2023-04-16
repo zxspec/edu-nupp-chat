@@ -58,7 +58,7 @@ export const createFileMeta = async (fileName: string, ownerId: string, publicKe
         name: fileName,
         owner: ownerId,
         users: {
-            [ownerId]: encryptedKey,
+            [ownerId]: encryptedKey.toString('hex'),
             // user1Id: encryptedKey,
             // user2Id: encryptedKey,
             // ...
