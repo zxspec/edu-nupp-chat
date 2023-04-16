@@ -6,7 +6,7 @@ import crypto from 'node:crypto';
 import { pipeline } from 'node:stream';
 
 import { serverAuth } from "@/libs/serverAuth";
-import { createFileMeta, getUserSecrets, updateUserSecrets } from "@/libs/crypto";
+import { createFileMeta, getUserSecrets, updateUserSecrets, getUserFiles } from "@/libs/crypto";
 import { INITIALIZATION_VECTOR, DATAFOLDER } from "@/libs/constants";
 
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -19,7 +19,7 @@ export const config = {
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    if (req.method !== 'PUT') {
+    if (req.method !== 'PUT' && req.method !== 'GET') {
         return res.status(405).end()
     }
 
@@ -30,6 +30,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         if (req.method === "PUT" && passphrase) {
             return uploadFile(req, res, secrets, passphrase);
+        }
+
+        if (req.method === "GET") {
+            const files = await getUserFiles(secrets)
+            return res.status(200).json(files)
         }
     } catch (err) {
         console.error('### err: ', err)
@@ -54,8 +59,8 @@ function uploadFile(req: NextApiRequest, res: NextApiResponse, secrets: UserSecr
             const stream = fs.createWriteStream(filePath);
             file.pipe(cipher).pipe(stream);
 
-            if (!secrets.files.find(f => f === filePath)) {
-                secrets.files.push(filePath)
+            if (!secrets.files.find(f => f.filePath === filePath)) {
+                secrets.files.push({ filePath, filename })
                 updateUserSecrets(secrets)
             }
         } catch (e) {

@@ -1,5 +1,5 @@
 import { generateKeyPairSync, randomUUID, randomBytes, publicEncrypt } from 'node:crypto'
-import { join } from 'node:path'
+import { join, basename } from 'node:path'
 import { writeFile, readFile } from 'node:fs/promises'
 import { UserSecrets } from '@/types'
 
@@ -45,8 +45,6 @@ export const updateUserSecrets = async (secrets: UserSecrets) => {
     return writeFile(userJsonPath, JSON.stringify(secrets))
 }
 
-
-
 export const createFileMeta = async (fileName: string, ownerId: string, publicKey: string) => {
     const fileId = randomUUID()
     const fileJsonPath = join(DATAFOLDER, `${fileId}.json`)
@@ -69,4 +67,16 @@ export const createFileMeta = async (fileName: string, ownerId: string, publicKe
     await writeFile(fileJsonPath, JSON.stringify(fileMeta))
 
     return fileMeta
+}
+
+export const getUserFiles = async (secrets: UserSecrets) => {
+    const userJsonPath = getUserFilePath(secrets.id)
+    const rawUserData = await readFile(userJsonPath, 'utf-8')
+    const { files } = JSON.parse(rawUserData) as UserSecrets
+    return files.map(({ filePath, filename }) => {
+        return {
+            id: basename(filePath),
+            filename,
+        }
+    })
 }
