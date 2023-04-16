@@ -12,6 +12,12 @@ import { INITIALIZATION_VECTOR, DATAFOLDER } from "@/libs/constants";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { UserSecrets } from "@/types";
 
+export const config = {
+    api: {
+        bodyParser: false,
+    },
+};
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'PUT') {
         return res.status(405).end()
@@ -42,7 +48,7 @@ function uploadFile(req: NextApiRequest, res: NextApiResponse, secrets: UserSecr
             passphrase,
         }, encryptedKey);
 
-        const filePath = join(DATAFOLDER, `${fileId}.json`);
+        const filePath = join(DATAFOLDER, fileId);
         const cipher = crypto.createCipheriv('aes-256-cbc', fileEncryptionKey, INITIALIZATION_VECTOR);
         const stream = fs.createWriteStream(filePath);
         file.pipe(cipher).pipe(stream);
@@ -57,6 +63,11 @@ function uploadFile(req: NextApiRequest, res: NextApiResponse, secrets: UserSecr
         res.writeHead(200, { Connection: "close" });
         res.end('File uploaded');
     });
+
+    bb.on('error', (err) => {
+        console.error('### err: ', err)
+        res.status(500).end()
+    })
 
     req.pipe(bb); // TODO check return req.pipe(bb)
 

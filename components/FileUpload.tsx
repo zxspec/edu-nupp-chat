@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import axios, { AxiosRequestConfig, AxiosProgressEvent } from "axios";
 import { Button } from "./Button";
 
@@ -7,6 +7,7 @@ export const FileUpload = () => {
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const fileInputElement = useRef<HTMLInputElement>();
 
   const handleSetFile = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -14,6 +15,7 @@ export const FileUpload = () => {
       if (files?.length) {
         setFile(files[0]);
         setError(null);
+        fileInputElement.current = event.target;
       }
     },
     [setFile]
@@ -39,6 +41,9 @@ export const FileUpload = () => {
     try {
       setError(null);
       await axios.put("/api/files", data, config);
+      if (fileInputElement.current) {
+        fileInputElement.current.value = "";
+      }
     } catch (e: any) {
       setError(e?.message);
     } finally {
