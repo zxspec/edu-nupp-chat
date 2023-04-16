@@ -8,6 +8,7 @@ import { useCallback, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Avatar } from "./Avatar";
 import { Button } from "./Button";
+import { useCurrentUserSecrets } from "@/hooks/useCurrentUserSecrets";
 
 type Props = {
   placeholder: string;
@@ -24,6 +25,8 @@ export default function Form({
   const loginModal = useLoginModal();
 
   const { data: currentUser } = useCurrentUser();
+  const secrets = useCurrentUserSecrets();
+  console.log("### secrets", secrets);
   const { mutate: mutatePosts } = usePosts();
   const { mutate: mutatePost } = usePost(postId);
 
@@ -77,7 +80,7 @@ export default function Form({
       ) : (
         <div className="py-8">
           <h1 className="text-white text-2xl text-center mb-4 font-bold">
-            Welcome to Messenger
+            Welcome to NuppChat
           </h1>
           <div className="flex flex-row items-center justify-center gap-4">
             <Button label="Login" onClick={loginModal.onOpen} />
