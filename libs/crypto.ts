@@ -47,7 +47,7 @@ export const updateUserSecrets = async (secrets: UserSecrets) => {
 
 export const createFileMeta = async (fileName: string, ownerId: string, publicKey: string) => {
     const fileId = randomUUID()
-    const fileJsonPath = join(DATAFOLDER, `${fileId}.json`)
+    const fileMetaPath = join(DATAFOLDER, `${fileId}.json`)
     const fileSymEncryptionKey = randomBytes(32);
     const encryptedKey = publicEncrypt(publicKey, fileSymEncryptionKey)
 
@@ -64,9 +64,15 @@ export const createFileMeta = async (fileName: string, ownerId: string, publicKe
         groups: {}
     }
 
-    await writeFile(fileJsonPath, JSON.stringify(fileMeta))
+    await writeFile(fileMetaPath, JSON.stringify(fileMeta))
 
     return fileMeta
+}
+
+export const getFileMeta = async (fileId: string) => {
+    const fileMetaPath = join(DATAFOLDER, `${fileId}.json`)
+    const rawFileMeta = await readFile(fileMetaPath, 'utf-8')
+    return JSON.parse(rawFileMeta.toString())
 }
 
 export const getUserFiles = async (secrets: UserSecrets) => {

@@ -3,11 +3,10 @@ import busboy from "busboy";
 import fs from "node:fs";
 import { join } from "node:path";
 import crypto from 'node:crypto';
-import { pipeline } from 'node:stream';
 
 import { serverAuth } from "@/libs/serverAuth";
-import { createFileMeta, getUserSecrets, updateUserSecrets, getUserFiles } from "@/libs/crypto";
-import { INITIALIZATION_VECTOR, DATAFOLDER } from "@/libs/constants";
+import { createFileMeta, getFileMeta, getUserFiles, getUserSecrets, updateUserSecrets } from "@/libs/crypto";
+import { ENCRYPTION_ALGORITHM, INITIALIZATION_VECTOR, DATAFOLDER } from "@/libs/constants";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import { UserSecrets } from "@/types";
@@ -28,13 +27,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const secrets = await getUserSecrets(currentUser.id)
         const passphrase = currentUser.hashedPassword
 
-        if (req.method === "PUT" && passphrase) {
-            return uploadFile(req, res, secrets, passphrase);
-        }
-
         if (req.method === "GET") {
             const files = await getUserFiles(secrets)
             return res.status(200).json(files)
+        }
+
+        if (req.method === "PUT" && passphrase) {
+            return uploadFile(req, res, secrets, passphrase);
         }
     } catch (err) {
         console.error('### err: ', err)
@@ -55,7 +54,7 @@ function uploadFile(req: NextApiRequest, res: NextApiResponse, secrets: UserSecr
             }, encryptedKey);
 
             const filePath = join(DATAFOLDER, fileId);
-            const cipher = crypto.createCipheriv('aes-256-cbc', fileEncryptionKey, INITIALIZATION_VECTOR);
+            const cipher = crypto.createCipheriv(ENCRYPTION_ALGORITHM, fileEncryptionKey, INITIALIZATION_VECTOR);
             const stream = fs.createWriteStream(filePath);
             file.pipe(cipher).pipe(stream);
 
