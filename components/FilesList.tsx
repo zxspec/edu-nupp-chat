@@ -9,14 +9,13 @@ export const FilesList = () => {
       {data?.length &&
         data.map(({ id, filename }) => {
           return (
-            <div key={id}>
+            <div key={id} className="p-2">
               <a
                 href={`/api/files/${id}`}
                 download={filename}
                 className="
                   w-full 
                   text-sky-500
-                  p-4 
                   text-lg
                   underline
                   bg-black 
