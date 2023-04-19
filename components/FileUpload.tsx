@@ -1,8 +1,11 @@
 import { useCallback, useRef, useState } from "react";
 import axios, { AxiosRequestConfig, AxiosProgressEvent } from "axios";
 import { Button } from "./Button";
+import { toast } from "react-hot-toast";
+import { useCurrentUserFiles } from "@/hooks/useCurrentUserFiles";
 
 export const FileUpload = () => {
+  const { mutate } = useCurrentUserFiles();
   const [file, setFile] = useState<File | undefined>();
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
@@ -44,13 +47,17 @@ export const FileUpload = () => {
       if (fileInputElement.current) {
         fileInputElement.current.value = "";
       }
-    } catch (e: any) {
-      setError(e?.message);
+      toast.success("File uploaded");
+      mutate();
+    } catch (err: any) {
+      toast.error("Something went wrong");
+      console.error("### err", err);
+      setError(err?.message);
     } finally {
       setSubmitting(false);
       setProgress(0);
     }
-  }, [file]);
+  }, [file, mutate]);
 
   return (
     <div>

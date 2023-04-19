@@ -1,7 +1,7 @@
 import { useCurrentUserFiles } from "@/hooks/useCurrentUserFiles";
 
 export const FilesList = () => {
-  const { data, isLoading, error } = useCurrentUserFiles();
+  const { data } = useCurrentUserFiles();
 
   return (
     <>
