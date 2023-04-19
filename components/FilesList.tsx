@@ -2,7 +2,7 @@ import { useCurrentUserFiles } from "@/hooks/useCurrentUserFiles";
 import axios from "axios";
 import { useCallback } from "react";
 import { toast } from "react-hot-toast";
-import { AiOutlineDelete } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlineShareAlt } from "react-icons/ai";
 export const FilesList = () => {
   const { data, mutate } = useCurrentUserFiles();
 
@@ -26,7 +26,6 @@ export const FilesList = () => {
 
   return (
     <>
-      <div>Files List</div>
       {data?.length &&
         data.map(({ id, filename }) => {
           return (
@@ -47,6 +46,11 @@ export const FilesList = () => {
               >
                 {filename}
               </a>
+              <AiOutlineShareAlt
+                size={20}
+                color="white"
+                className="cursor-pointer opacity-70 hover:opacity-100 transition column-gap-10"
+              />
               <AiOutlineDelete
                 size={20}
                 color="white"
