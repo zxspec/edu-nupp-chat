@@ -1,7 +1,15 @@
 import { useCurrentUserFiles } from "@/hooks/useCurrentUserFiles";
-
+import { useCallback } from "react";
+import { AiOutlineDelete } from "react-icons/ai";
 export const FilesList = () => {
   const { data } = useCurrentUserFiles();
+
+  const deleteFileHandler = useCallback(() => {
+    const result = confirm("Are you sure you want to delete this file? (y/n)");
+    if (result) {
+      // TODO: delete file
+    }
+  }, []);
 
   return (
     <>
@@ -9,7 +17,7 @@ export const FilesList = () => {
       {data?.length &&
         data.map(({ id, filename }) => {
           return (
-            <div key={id} className="p-2">
+            <div key={id} className="flex flex-row items-center p-2">
               <a
                 href={`/api/files/${id}`}
                 download={filename}
@@ -22,13 +30,16 @@ export const FilesList = () => {
                   border-none 
                   rounded-md 
                   outline-none 
-                  transition
-                  disabled:bg-neutral-900
-                  disabled:opacity-70
-                  disabled:cursor-not-allowed"
+                  transition"
               >
                 {filename}
               </a>
+              <AiOutlineDelete
+                size={20}
+                color="white"
+                className="cursor-pointer opacity-70 hover:opacity-100 transition"
+                onClick={deleteFileHandler}
+              />
             </div>
           );
         })}
