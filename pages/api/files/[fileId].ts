@@ -4,7 +4,7 @@ import crypto from 'node:crypto';
 import { pipeline } from 'node:stream';
 
 import { serverAuth } from "@/libs/serverAuth";
-import { getFileMeta, getUserSecrets } from "@/libs/crypto";
+import { deleteUserFile, getFileMeta, getUserSecrets } from "@/libs/userFIles";
 import { ENCRYPTION_ALGORITHM, INITIALIZATION_VECTOR, DATAFOLDER } from "@/libs/constants";
 
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -17,7 +17,7 @@ export const config = {
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    if (req.method !== 'PUT' && req.method !== 'GET') {
+    if (req.method !== 'GET' && req.method !== 'DELETE') {
         return res.status(405).end()
     }
 
@@ -28,6 +28,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         if (req.method === "GET" && passphrase) {
             return getFile(req, res, secrets, passphrase);
+        }
+
+        if (req.method === "DELETE" && passphrase) {
+            const { fileId } = req.query
+            await deleteUserFile(fileId as string, secrets);
+            return res.status(200).end();
         }
     } catch (err) {
         console.error('### err: ', err)

@@ -1,10 +1,12 @@
 import { generateKeyPairSync, randomUUID, randomBytes, publicEncrypt } from 'node:crypto'
 import { join, basename } from 'node:path'
-import { writeFile, readFile } from 'node:fs/promises'
+import { writeFile, readFile, rm } from 'node:fs/promises'
 import { UserSecrets } from '@/types'
 
 import { DATAFOLDER } from '@/libs/constants'
 
+const getFilePath = (fileId: string) => join(DATAFOLDER, fileId)
+const getMetaFilePath = (fileId: string) => join(DATAFOLDER, `${fileId}.json`)
 const getUserFilePath = (userId: string) => join(DATAFOLDER, `${userId}.json`)
 
 export const generateUserKeys = (passphrase: string) => {
@@ -47,7 +49,7 @@ export const updateUserSecrets = async (secrets: UserSecrets) => {
 
 export const createFileMeta = async (fileName: string, ownerId: string, publicKey: string) => {
     const fileId = randomUUID()
-    const fileMetaPath = join(DATAFOLDER, `${fileId}.json`)
+    const fileMetaPath = getMetaFilePath(fileId)
     const fileSymEncryptionKey = randomBytes(32);
     const encryptedKey = publicEncrypt(publicKey, fileSymEncryptionKey)
 
@@ -70,7 +72,7 @@ export const createFileMeta = async (fileName: string, ownerId: string, publicKe
 }
 
 export const getFileMeta = async (fileId: string) => {
-    const fileMetaPath = join(DATAFOLDER, `${fileId}.json`)
+    const fileMetaPath = getMetaFilePath(fileId)
     const rawFileMeta = await readFile(fileMetaPath, 'utf-8')
     return JSON.parse(rawFileMeta.toString())
 }
@@ -85,4 +87,20 @@ export const getUserFiles = async (secrets: UserSecrets) => {
             filename,
         }
     })
+}
+
+export const deleteUserFile = async (fileId: string, secrets: UserSecrets) => {
+    const filePath = getFilePath(fileId)
+    const fileMetaPath = getMetaFilePath(fileId)
+    const fileMeta = await getFileMeta(fileId)
+
+    if (fileMeta.owner === secrets.id) {
+        await rm(filePath)
+        await rm(fileMetaPath)
+
+        secrets.files = secrets.files.filter((f) => f.filePath !== filePath)
+        await updateUserSecrets(secrets)
+    } else {
+        throw new Error('You are not the owner of this file')
+    }
 }

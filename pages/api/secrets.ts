@@ -1,4 +1,4 @@
-import { getUserSecrets } from "@/libs/crypto";
+import { getUserSecrets } from "@/libs/userFIles";
 import { serverAuth } from "@/libs/serverAuth";
 import { UserSecrets } from "@/types";
 import { NextApiRequest, NextApiResponse } from "next";

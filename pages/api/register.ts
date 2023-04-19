@@ -2,7 +2,7 @@ import bcrypt from "bcrypt"
 import { NextApiRequest, NextApiResponse } from "next";
 
 import prisma from '@/libs/prismadb'
-import { generateUserKeys, createUserSecrets } from "@/libs/crypto";
+import { generateUserKeys, createUserSecrets } from "@/libs/userFIles";
 
 export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method !== 'POST') {

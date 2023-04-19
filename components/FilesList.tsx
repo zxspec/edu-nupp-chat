@@ -1,15 +1,28 @@
 import { useCurrentUserFiles } from "@/hooks/useCurrentUserFiles";
+import axios from "axios";
 import { useCallback } from "react";
+import { toast } from "react-hot-toast";
 import { AiOutlineDelete } from "react-icons/ai";
 export const FilesList = () => {
-  const { data } = useCurrentUserFiles();
+  const { data, mutate } = useCurrentUserFiles();
 
-  const deleteFileHandler = useCallback(() => {
-    const result = confirm("Are you sure you want to delete this file? (y/n)");
-    if (result) {
-      // TODO: delete file
-    }
-  }, []);
+  const deleteFileHandler = useCallback(
+    async (id: string) => {
+      const confirmationMeesage =
+        "Are you sure you want to delete this file? (y/n)";
+      if (confirm(confirmationMeesage)) {
+        try {
+          await axios.delete(`/api/files/${id}`);
+          toast.success("File deleted");
+          mutate();
+        } catch (error) {
+          console.error("### error: ", error);
+          toast.error("Something went wrong");
+        }
+      }
+    },
+    [mutate]
+  );
 
   return (
     <>
@@ -38,7 +51,7 @@ export const FilesList = () => {
                 size={20}
                 color="white"
                 className="cursor-pointer opacity-70 hover:opacity-100 transition"
-                onClick={deleteFileHandler}
+                onClick={() => deleteFileHandler(id)}
               />
             </div>
           );
