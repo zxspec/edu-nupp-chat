@@ -1,10 +1,12 @@
 import { useCurrentUserFiles } from "@/hooks/useCurrentUserFiles";
 import axios from "axios";
 import { useCallback } from "react";
+import { useUserSelectModal } from "@/hooks/useUserSelectModal";
 import { toast } from "react-hot-toast";
 import { AiOutlineDelete, AiOutlineShareAlt } from "react-icons/ai";
 export const FilesList = () => {
   const { data, mutate } = useCurrentUserFiles();
+  const userSelectModal = useUserSelectModal();
 
   const deleteFileHandler = useCallback(
     async (id: string) => {
@@ -50,6 +52,7 @@ export const FilesList = () => {
                 size={20}
                 color="white"
                 className="cursor-pointer opacity-70 hover:opacity-100 transition column-gap-10"
+                onClick={userSelectModal.onOpen}
               />
               <AiOutlineDelete
                 size={20}
