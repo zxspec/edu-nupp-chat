@@ -1,7 +1,7 @@
 import { formatDistanceToNowStrict } from "date-fns";
 import { useRouter } from "next/router";
 import { useCallback, useMemo } from "react";
-import { Avatar } from "../Avatar";
+import { ClickableAvatar } from "../ClickableAvatar";
 
 type Props = {
   data: Record<string, any>;
@@ -28,7 +28,7 @@ export const CommentItem = ({ data }: Props) => {
   return (
     <div className="border-b-[1px] border-neutral-800 p-5 cursor-pointer hover:bg-neutral-900 transition">
       <div className="flex flex-row items-start gap-3">
-        <Avatar userId={data.user.id} />
+        <ClickableAvatar userId={data.user.id} />
         <div>
           <div className="flex flex-row items-center gap-2">
             <p

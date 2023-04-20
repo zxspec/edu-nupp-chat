@@ -6,7 +6,7 @@ import { useRegisterModal } from "@/hooks/useRegisterModal";
 import axios from "axios";
 import { useCallback, useState } from "react";
 import { toast } from "react-hot-toast";
-import { Avatar } from "./Avatar";
+import { ClickableAvatar } from "./ClickableAvatar";
 import { Button } from "./Button";
 import { useCurrentUserSecrets } from "@/hooks/useCurrentUserSecrets";
 
@@ -57,7 +57,7 @@ export default function Form({
       {currentUser ? (
         <div className="flex flex-row gap-4">
           <div>
-            <Avatar userId={currentUser.id} />
+            <ClickableAvatar userId={currentUser.id} />
           </div>
           <div className="w-full">
             <textarea

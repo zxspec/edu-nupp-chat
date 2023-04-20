@@ -1,6 +1,6 @@
 import { useUser } from "@/hooks/useUser";
 import Image from "next/image";
-import { Avatar } from "../Avatar";
+import { ClickableAvatar } from "../ClickableAvatar";
 
 type Props = {
   userId: string;
@@ -19,7 +19,7 @@ export function UserHero({ userId }: Props) {
           />
         )}
         <div className="absolute -bottom-16 left-4">
-          <Avatar userId={userId} isLarge hasBorder />
+          <ClickableAvatar userId={userId} isLarge hasBorder />
         </div>
       </div>
     </div>

@@ -4,7 +4,7 @@ import { formatDistanceToNowStrict } from "date-fns";
 import { useRouter } from "next/router";
 import { useCallback, useMemo } from "react";
 import { AiFillHeart, AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
-import { Avatar } from "../Avatar";
+import { ClickableAvatar } from "../ClickableAvatar";
 
 import type { PostWithUserAndComments } from "@/types";
 import { useLike } from "@/hooks/useLike";
@@ -61,7 +61,7 @@ export const PostItem = ({ postData, userId }: Props) => {
       className="border-b-[1px] border-neutral-800 p-5 cursor-pointer hover:bg-neutral-800 transition"
     >
       <div className="flex flex-row gap-3 items-start">
-        <Avatar userId={postData.user.id} />
+        <ClickableAvatar userId={postData.user.id} />
         <div>
           <div className="flex flex-row items-center gap-3">
             <p
