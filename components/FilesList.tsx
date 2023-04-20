@@ -49,15 +49,15 @@ export const FilesList = () => {
                 {filename}
               </a>
               <AiOutlineShareAlt
-                size={20}
+                size={30}
                 color="white"
-                className="cursor-pointer opacity-70 hover:opacity-100 transition column-gap-10"
+                className="cursor-pointer opacity-70 hover:opacity-100 transition mr-4 hover:scale-125"
                 onClick={userSelectModal.onOpen}
               />
               <AiOutlineDelete
-                size={20}
+                size={30}
                 color="white"
-                className="cursor-pointer opacity-70 hover:opacity-100 transition"
+                className="cursor-pointer opacity-70 hover:opacity-100 transition hover:scale-125 hover:fill-red-500"
                 onClick={() => deleteFileHandler(id)}
               />
             </div>
