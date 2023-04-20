@@ -1,7 +1,7 @@
 import { generateKeyPairSync, randomUUID, randomBytes, publicEncrypt } from 'node:crypto'
 import { join, basename } from 'node:path'
 import { writeFile, readFile, rm } from 'node:fs/promises'
-import { UserSecrets } from '@/types'
+import { UserSecrets, FileMeta, FileInfo } from '@/types'
 
 import { DATAFOLDER } from '@/libs/constants'
 
@@ -53,7 +53,7 @@ export const createFileMeta = async (fileName: string, ownerId: string, publicKe
     const fileSymEncryptionKey = randomBytes(32);
     const encryptedKey = publicEncrypt(publicKey, fileSymEncryptionKey)
 
-    const fileMeta = {
+    const fileMeta: FileMeta = {
         id: fileId,
         name: fileName,
         owner: ownerId,
@@ -74,10 +74,11 @@ export const createFileMeta = async (fileName: string, ownerId: string, publicKe
 export const getFileMeta = async (fileId: string) => {
     const fileMetaPath = getMetaFilePath(fileId)
     const rawFileMeta = await readFile(fileMetaPath, 'utf-8')
-    return JSON.parse(rawFileMeta.toString())
+    return JSON.parse(rawFileMeta.toString()) as FileMeta
 }
 
-export const getUserFiles = async (secrets: UserSecrets) => {
+// TODO check if userId is enough here
+export const getUserFiles = async (secrets: UserSecrets): Promise<FileInfo[]> => {
     const userJsonPath = getUserFilePath(secrets.id)
     const rawUserData = await readFile(userJsonPath, 'utf-8')
     const { files } = JSON.parse(rawUserData) as UserSecrets
