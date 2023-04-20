@@ -6,7 +6,7 @@ export type UserSecrets = {
     publicKey: string
     privateKey: string
 }
-export type FileMeta = {
+export type FileInfo = {
     id: string
     filename: string
 }
