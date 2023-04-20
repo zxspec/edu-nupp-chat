@@ -4,7 +4,7 @@ import crypto from 'node:crypto';
 import { pipeline } from 'node:stream';
 
 import { serverAuth } from "@/libs/serverAuth";
-import { deleteUserFile, getFileMeta, getUserSecrets } from "@/libs/userFIles";
+import { deleteUserFile, getFileMeta, getUserSecrets } from "@/libs/userFiles";
 import { ENCRYPTION_ALGORITHM, INITIALIZATION_VECTOR, DATAFOLDER } from "@/libs/constants";
 
 import type { NextApiRequest, NextApiResponse } from "next";

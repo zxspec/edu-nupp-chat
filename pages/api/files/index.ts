@@ -5,7 +5,7 @@ import { join } from "node:path";
 import crypto from 'node:crypto';
 
 import { serverAuth } from "@/libs/serverAuth";
-import { createFileMeta, getUserFiles, getUserSecrets, updateUserSecrets } from "@/libs/userFIles";
+import { createFileMeta, getUserFiles, getUserSecrets, updateUserSecrets } from "@/libs/userFiles";
 import { ENCRYPTION_ALGORITHM, INITIALIZATION_VECTOR, DATAFOLDER } from "@/libs/constants";
 
 import type { NextApiRequest, NextApiResponse } from "next";
