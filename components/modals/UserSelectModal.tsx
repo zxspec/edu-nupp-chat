@@ -7,28 +7,30 @@ import { Avatar } from "../Avatar";
 import { Checkbox } from "../Checkbox";
 import { useFileShareInfo } from "@/hooks/useFileShareInfo";
 import axios from "axios";
+import { FileShareInfo } from "@/types"; // TODO do PATCH request in this format
+import toast from "react-hot-toast";
 
 export const UserSelectModal = () => {
   const { data: users = [] } = useUsers();
   const userSelectModal = useUserSelectModal();
   const { data: fileShareInfo } = useFileShareInfo(userSelectModal.fileId);
 
-  const fileShareData = useMemo(() => {
-    return users.map((user) => {
-      const isOwner = user.id === fileShareInfo?.owner;
-      const checked = isOwner || fileShareInfo?.users?.includes(user.id);
-      return { userId: user.id, checked };
+  const usersShareData = useMemo(() => {
+    return users.map(({ id, name, username }) => {
+      const isOwner = id === fileShareInfo?.owner;
+      const checked = isOwner || fileShareInfo?.users?.includes(id);
+      return { userId: id, name, username, isOwner, checked };
     });
   }, [fileShareInfo?.owner, fileShareInfo?.users, users]);
 
   const bodyContent = (
     <div className="flex flex-col gap-6 mt-4">
-      {fileShareData.map((item) => (
+      {usersShareData.map((item) => (
         <div key={item.userId} className="flex flex-row gap-4">
           <Checkbox
             checked={item.checked}
-            disabled={item.userId === fileShareInfo?.owner}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            disabled={item.isOwner}
+            onChange={(event) => {
               item.checked = event.target.checked;
             }}
           />
@@ -46,10 +48,25 @@ export const UserSelectModal = () => {
     userSelectModal.onClose();
   }, [userSelectModal]);
 
-  const submitHandler = useCallback(() => {
-    axios.patch(`/api/share/${userSelectModal.fileId}`, fileShareData);
-    userSelectModal.onClose();
-  }, [fileShareData, userSelectModal]);
+  const submitHandler = useCallback(async () => {
+    if (!fileShareInfo) return;
+
+    try {
+      const requestBody: FileShareInfo = {
+        ...fileShareInfo,
+        users: usersShareData.filter((u) => u.checked).map((u) => u.userId),
+      };
+
+      await axios.patch(`/api/share/${userSelectModal.fileId}`, requestBody);
+
+      toast.success("Account created.");
+
+      userSelectModal.onClose();
+    } catch (err) {
+      console.error("### error: ", err);
+      toast.error("Something went wrong.");
+    }
+  }, [fileShareInfo, userSelectModal, usersShareData]);
 
   return (
     <Modal
