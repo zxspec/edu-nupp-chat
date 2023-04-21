@@ -52,7 +52,7 @@ export const FilesList = () => {
                 size={30}
                 color="white"
                 className="cursor-pointer opacity-70 hover:opacity-100 transition mr-4 hover:scale-125"
-                onClick={userSelectModal.onOpen}
+                onClick={() => userSelectModal.onOpen(id)}
               />
               <AiOutlineDelete
                 size={30}

@@ -1,7 +1,7 @@
 import { generateKeyPairSync, randomUUID, randomBytes, publicEncrypt } from 'node:crypto'
 import { join, basename } from 'node:path'
 import { writeFile, readFile, rm } from 'node:fs/promises'
-import { UserSecrets, FileMeta, FileInfo } from '@/types'
+import { UserSecrets, FileMeta, FileInfo, FileShareInfo } from '@/types'
 
 import { DATAFOLDER } from '@/libs/constants'
 
@@ -47,7 +47,7 @@ export const updateUserSecrets = async (secrets: UserSecrets) => {
     return writeFile(userJsonPath, JSON.stringify(secrets))
 }
 
-export const createFileMeta = async (fileName: string, ownerId: string, publicKey: string) => {
+export const createFileMeta = async (filename: string, ownerId: string, publicKey: string) => {
     const fileId = randomUUID()
     const fileMetaPath = getMetaFilePath(fileId)
     const fileSymEncryptionKey = randomBytes(32);
@@ -55,7 +55,7 @@ export const createFileMeta = async (fileName: string, ownerId: string, publicKe
 
     const fileMeta: FileMeta = {
         id: fileId,
-        name: fileName,
+        filename,
         owner: ownerId,
         users: {
             [ownerId]: encryptedKey.toString('hex'),
@@ -104,4 +104,10 @@ export const deleteUserFile = async (fileId: string, secrets: UserSecrets) => {
     } else {
         throw new Error('You are not the owner of this file')
     }
+}
+
+export const getFileShareData = async (fileId: string): Promise<FileShareInfo> => {
+    const fileMeta = await getFileMeta(fileId)
+    const { owner, users, groups } = fileMeta
+    return { owner, users: Object.keys(users), groups: Object.keys(groups) }
 }

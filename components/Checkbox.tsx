@@ -1,18 +1,36 @@
+import { useCallback, useState } from "react";
+
 type Props = {
   placeholder?: string;
-  value?: string;
+  checked?: boolean;
   disabled?: boolean;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export const Checkbox = ({ placeholder, value, disabled, onChange }: Props) => (
-  <input
-    disabled={disabled}
-    onChange={onChange}
-    value={value}
-    placeholder={placeholder}
-    type="checkbox"
-    className="
+export const Checkbox = ({
+  placeholder,
+  checked,
+  disabled,
+  onChange,
+}: Props) => {
+  const [isChecked, setIsChecked] = useState(checked);
+
+  const onChangeHandler = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setIsChecked(event.target.checked);
+      onChange(event);
+    },
+    [onChange]
+  );
+
+  return (
+    <input
+      type="checkbox"
+      disabled={disabled}
+      onChange={onChangeHandler}
+      placeholder={placeholder}
+      checked={isChecked}
+      className="
       p-4 
       text-lg 
       bg-black 
@@ -29,5 +47,6 @@ export const Checkbox = ({ placeholder, value, disabled, onChange }: Props) => (
       disabled:opacity-70
       disabled:cursor-not-allowed
     "
-  />
-);
+    />
+  );
+};

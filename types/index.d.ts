@@ -11,14 +11,14 @@ export type FileInfo = {
     filename: string
 }
 
-export type FileMeta = {
-    id: string,
-    name: string,
+export type FileMeta = FileInfo & {
     owner: string,
-    users: {
-        [key: sting]: string
-    },
-    groups: {
-        [key: sting]: string
-    }
+    users: Record<string, string>
+    groups: Record<string, string>
+}
+
+export type FileShareInfo = {
+    owner: string
+    users: string[]
+    groups: string[]
 }
