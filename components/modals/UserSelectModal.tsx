@@ -13,7 +13,9 @@ import toast from "react-hot-toast";
 export const UserSelectModal = () => {
   const { data: users = [] } = useUsers();
   const userSelectModal = useUserSelectModal();
-  const { data: fileShareInfo } = useFileShareInfo(userSelectModal.fileId);
+  const { data: fileShareInfo, mutate } = useFileShareInfo(
+    userSelectModal.fileId
+  );
 
   const usersShareData = useMemo(() => {
     return users.map(({ id, name, username }) => {
@@ -59,14 +61,14 @@ export const UserSelectModal = () => {
 
       await axios.patch(`/api/share/${userSelectModal.fileId}`, requestBody);
 
-      toast.success("Account created.");
-
+      toast.success("Updated sharring settings.");
+      mutate();
       userSelectModal.onClose();
     } catch (err) {
       console.error("### error: ", err);
       toast.error("Something went wrong.");
     }
-  }, [fileShareInfo, userSelectModal, usersShareData]);
+  }, [fileShareInfo, mutate, userSelectModal, usersShareData]);
 
   return (
     <Modal
