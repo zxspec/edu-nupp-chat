@@ -54,7 +54,7 @@ export const SidebarPostButton = () => {
             text-[20px]
         "
         >
-          {"Tweet"}
+          {"New message"}
         </p>
         {/* <FaFeather size={24} color="white" /> */}
       </div>
