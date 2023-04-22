@@ -22,3 +22,10 @@ export type FileShareInfo = {
     users: string[]
     groups: string[]
 }
+
+export type GroupInfo = {
+    id: string
+    name: string
+    owner: string
+    users: string[]
+}
