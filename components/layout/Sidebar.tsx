@@ -1,4 +1,4 @@
-import { BiLogOut } from "react-icons/bi";
+import { BiGroup, BiLogOut } from "react-icons/bi";
 import { BsHouseFill, BsBellFill } from "react-icons/bs";
 import { FaUser } from "react-icons/fa";
 import { RiFileShield2Fill } from "react-icons/ri";
@@ -28,6 +28,12 @@ export const Sidebar = () => {
       label: "Files",
       href: "/files",
       icon: RiFileShield2Fill,
+      auth: true,
+    },
+    {
+      label: "Groups",
+      href: "/groups",
+      icon: BiGroup,
       auth: true,
     },
     {
