@@ -51,11 +51,12 @@ export const GroupModal = () => {
 
       toast.success("Group created.");
       // mutate(); // TODO
+      onClose();
     } catch (err) {
       console.error("### error: ", err);
       toast.error("Something went wrong.");
     }
-  }, [checkedUsers, groupId, groupName, ownerId]);
+  }, [checkedUsers, groupId, groupName, onClose, ownerId]);
 
   const bodyContent = (
     <>
